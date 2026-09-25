@@ -1,0 +1,91 @@
+DATASET-LEVEL ADVERSARIAL COMPARISON REPORT
+======================================================================
+Images requested/tested: 200
+Failed images: 0
+
+Definitions:
+- any_model_changed_count: image counted successful if at least one model changed top-1 prediction.
+- all_models_changed_count: image counted successful only if ResNet50, ViT, and EfficientNet all changed.
+- avg_asr_percent: average percentage of models changed per image.
+
+FGSM at epsilon 4/255
+  Tested images: 200
+  At least 1 model changed: 110 (55.0%)
+  All 3 models changed: 13 (6.5%)
+  Avg ASR: 26.5%
+  Avg confidence drop: 10.2%
+  Avg PSNR: 36.18 dB
+  Avg SSIM: 0.9246
+
+PGD at epsilon 4/255
+  Tested images: 200
+  At least 1 model changed: 139 (69.5%)
+  All 3 models changed: 4 (2.0%)
+  Avg ASR: 26.83%
+  Avg confidence drop: 13.44%
+  Avg PSNR: 40.26 dB
+  Avg SSIM: 0.9672
+
+Ensemble PGD at epsilon 4/255
+  Tested images: 200
+  At least 1 model changed: 187 (93.5%)
+  All 3 models changed: 59 (29.5%)
+  Avg ASR: 62.33%
+  Avg confidence drop: 42.28%
+  Avg PSNR: 40.18 dB
+  Avg SSIM: 0.9669
+
+FGSM at epsilon 8/255
+  Tested images: 200
+  At least 1 model changed: 115 (57.5%)
+  All 3 models changed: 16 (8.0%)
+  Avg ASR: 30.67%
+  Avg confidence drop: 11.29%
+  Avg PSNR: 30.2 dB
+  Avg SSIM: 0.7853
+
+PGD at epsilon 8/255
+  Tested images: 200
+  At least 1 model changed: 149 (74.5%)
+  All 3 models changed: 8 (4.0%)
+  Avg ASR: 32.0%
+  Avg confidence drop: 14.78%
+  Avg PSNR: 34.3 dB
+  Avg SSIM: 0.8915
+
+Ensemble PGD at epsilon 8/255
+  Tested images: 200
+  At least 1 model changed: 189 (94.5%)
+  All 3 models changed: 81 (40.5%)
+  Avg ASR: 71.5%
+  Avg confidence drop: 44.09%
+  Avg PSNR: 34.28 dB
+  Avg SSIM: 0.8914
+
+FGSM at epsilon 16/255
+  Tested images: 200
+  At least 1 model changed: 120 (60.0%)
+  All 3 models changed: 28 (14.0%)
+  Avg ASR: 36.17%
+  Avg confidence drop: 15.22%
+  Avg PSNR: 24.25 dB
+  Avg SSIM: 0.5604
+
+PGD at epsilon 16/255
+  Tested images: 200
+  At least 1 model changed: 161 (80.5%)
+  All 3 models changed: 16 (8.0%)
+  Avg ASR: 39.5%
+  Avg confidence drop: 18.81%
+  Avg PSNR: 28.25 dB
+  Avg SSIM: 0.7192
+
+Ensemble PGD at epsilon 16/255
+  Tested images: 200
+  At least 1 model changed: 195 (97.5%)
+  All 3 models changed: 116 (58.0%)
+  Avg ASR: 80.0%
+  Avg confidence drop: 43.52%
+  Avg PSNR: 28.24 dB
+  Avg SSIM: 0.7193
+
