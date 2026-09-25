@@ -156,41 +156,49 @@ For each analyzed image and epsilon value, the program generates:
 
 The generated files are organized into separate output directories.
 
-## Installation
+## Code Overview
+There are two code files in this project. You can use them depending on your goal. They use the same core attack methodology, but the main distinction is how many images they test and how the results are analyzed. 
 
-Clone the repository:
+### `codes.py`
 
-```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
-cd YOUR_REPOSITORY
-```
+Single-image adversarial attack analysis.
 
-Install the required Python packages:
+This script takes **one image at a time** and generates adversarial examples using:
 
-```bash
-pip install torch torchvision numpy pillow matplotlib scikit-image
-```
+* FGSM
+* PGD
+* Ensemble PGD
 
-## Usage
+The generated images are evaluated using **ResNet-50, ViT-B/16, and EfficientNet-B0**. It compares the original and adversarial images using prediction changes, Attack Success Rate (ASR), confidence changes, PSNR, SSIM, MSE, and perturbation metrics.
 
-Place an image in the project directory and update the image path in the main section of the script:
+It also generates visual comparisons and perturbation heatmaps for detailed inspection.
 
-```python
-analyzer.analyze_and_compare(
-    "whitegirl.jpg",
-    epsilon_values=[4/255, 8/255, 16/255],
-    iterations=20,
-    output_prefix="whitegirl_analysis"
-)
-```
+### `smallcopycat.py`
 
-Then run:
+Dataset-level adversarial attack experiment.
 
-```bash
-python "Pasted code.py"
-```
+This script applies the same three attack methods to **multiple images (200+ or more)** and aggregates the results across the dataset.
 
-The analysis results will be saved to the configured output directories.
+It is used to compare FGSM, PGD, and Ensemble PGD in terms of:
+
+* Attack Success Rate
+* Prediction changes across models
+* Confidence changes
+* Image quality
+* Perturbation magnitude
+* Performance across different epsilon values
+
+The script outputs per-image metrics, dataset-level summaries, CSV files, reports, and visualizations.
+
+### Purpose
+
+The two scripts provide two levels of analysis:
+
+**`codes.py` → detailed analysis of individual adversarial examples**
+
+**`smallcopycat.py` → quantitative evaluation across a larger dataset**
+
+
 
 ## Example Results
 
