@@ -202,7 +202,7 @@ The two scripts provide two levels of analysis:
 
 ## Example Results
 
-Add your generated comparison figure here:
+There are two files with results. ###analysis_outputs.zip and ###
 
 ![Adversarial Attack Comparison](https://raw.githubusercontent.com/kagylain/Adversarial-Attack-Analysis-/5cc55ead8c9760c14f859ece199dcc9fd72d4a02/dataset_3eps_20iters_example18_eps8_comparison.png)
 
