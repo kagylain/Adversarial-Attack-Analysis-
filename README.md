@@ -1,4 +1,263 @@
-# Adversarial Attack Analysis for Image Classfifcation
+# Adversarial Attack Analysis for Image Classification
 A PyTorch-based tool for generating and analyzing adversarial examples against ImageNet image-classification models.  
 
 The project implements FGSM, PGD, and Ensemble PGD attacks and evaluates their effects on multiple pretrained deep-learning models using both prediction-based and image-quality metrics.
+
+## Overview
+
+Adversarial examples are images that have been intentionally modified with small perturbations that can cause a neural network to change its prediction.
+
+This project investigates how different adversarial attacks affect image classifiers while measuring the trade-off between:
+
+* Attack effectiveness
+* Perturbation magnitude
+* Visual similarity to the original image
+* Transferability across different models
+
+The current implementation performs a detailed analysis on an individual input image.
+
+## Models
+
+The following pretrained ImageNet models are used:
+
+* **ResNet-50**
+* **Vision Transformer (ViT-B/16)**
+* **EfficientNet-B0**
+
+ResNet-50 is used as the primary model for FGSM and PGD attacks, while Ensemble PGD uses all three models simultaneously.
+
+## Implemented Attacks
+
+### FGSM
+
+**Fast Gradient Sign Method (FGSM)** generates an adversarial perturbation using the sign of the gradient of the loss with respect to the input image.
+
+### PGD
+
+**Projected Gradient Descent (PGD)** performs multiple iterative gradient updates while constraining the perturbation within an \(L_\infty\) epsilon bound.
+
+### Ensemble PGD
+
+Ensemble PGD calculates the loss across multiple models and uses the combined gradient to generate an adversarial example.
+
+This allows the project to examine whether adversarial perturbations transfer between different architectures.
+
+## Experimental Settings
+
+The default configuration evaluates three perturbation budgets:
+
+```text
+ε = 4/255
+ε = 8/255
+ε = 16/255
+```
+
+PGD-based attacks use:
+
+```text
+20 iterations
+```
+
+Input images are center-cropped to **224 × 224** before the attacks are generated.
+
+## Evaluation Metrics
+
+The project calculates several metrics to evaluate the generated adversarial examples.
+
+### Prediction Change
+
+The code measures whether each model's top-1 prediction changes after the attack.
+
+The current implementation reports this as:
+
+```text
+Attack Success Rate (%)
+```
+
+More precisely, this represents the **percentage of evaluated models whose top-1 prediction changed**, rather than the conventional ground-truth-based attack success rate.
+
+### Confidence Drop
+
+The difference between the original and protected image's top-1 prediction confidence is calculated for each model.
+
+### MSE
+
+**Mean Squared Error (MSE)** measures the average pixel-level difference between the original and adversarial images.
+
+Lower values indicate smaller pixel-level differences.
+
+### PSNR
+
+**Peak Signal-to-Noise Ratio (PSNR)** is used to evaluate image similarity.
+
+Higher PSNR generally indicates that the adversarial image is closer to the original image.
+
+### SSIM
+
+**Structural Similarity Index (SSIM)** measures structural similarity between the original and adversarial images.
+
+Values closer to 1 indicate greater structural similarity.
+
+### Perturbation Statistics
+
+The project also reports:
+
+* L2 norm
+* Mean perturbation
+* Standard deviation of perturbation
+* Maximum perturbation
+* Percentage of pixels with perturbation greater than 10 intensity levels
+
+## Workflow
+
+```text
+Input Image
+     │
+     ▼
+Resize + Center Crop
+     │
+     ▼
+224 × 224 Image
+     │
+     ├──────────────┐
+     ▼              ▼
+Original        Adversarial
+Prediction       Attacks
+                    │
+          ┌─────────┼─────────┐
+          ▼         ▼         ▼
+        FGSM       PGD    Ensemble PGD
+          │         │         │
+          └─────────┼─────────┘
+                    ▼
+          Evaluate Multiple Models
+                    │
+                    ▼
+       ┌─────────────────────────┐
+       │ PSNR / SSIM / MSE       │
+       │ Prediction Changes      │
+       │ Confidence Changes      │
+       │ Perturbation Statistics │
+       └─────────────────────────┘
+```
+
+## Output
+
+For each analyzed image and epsilon value, the program generates:
+
+* Cropped original image
+* Adversarial image
+* Full-size resized adversarial image
+* Comparison visualizations
+* Perturbation heatmaps
+* Analysis report
+* CSV results
+* Epsilon comparison plots
+
+The generated files are organized into separate output directories.
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
+cd YOUR_REPOSITORY
+```
+
+Install the required Python packages:
+
+```bash
+pip install torch torchvision numpy pillow matplotlib scikit-image
+```
+
+## Usage
+
+Place an image in the project directory and update the image path in the main section of the script:
+
+```python
+analyzer.analyze_and_compare(
+    "whitegirl.jpg",
+    epsilon_values=[4/255, 8/255, 16/255],
+    iterations=20,
+    output_prefix="whitegirl_analysis"
+)
+```
+
+Then run:
+
+```bash
+python "Pasted code.py"
+```
+
+The analysis results will be saved to the configured output directories.
+
+## Example Results
+
+Add your generated comparison figure here:
+
+```markdown
+![Adversarial Attack Comparison](results/comparison.png)
+```
+
+You can also add your epsilon comparison plot:
+
+```markdown
+![Epsilon Comparison](results/epsilon_comparison.png)
+```
+
+## Limitations
+
+This project is currently designed as a **single-image adversarial attack analysis** rather than a large-scale benchmark.
+
+Important limitations include:
+
+* Experiments are performed on individual images.
+* No ground-truth labels are currently provided, so conventional classification attack success cannot be measured.
+* The reported prediction-change rate measures changes in top-1 predictions across the evaluated models.
+* FGSM and PGD are optimized against ResNet-50, while Ensemble PGD uses all three models.
+* The adversarial attack is generated at 224 × 224 resolution.
+* The "full-size" adversarial image is produced by resizing the 224 × 224 adversarial image back to the original image dimensions.
+* Random initialization in PGD means results can vary between runs unless a random seed is fixed.
+
+## Future Improvements
+
+Potential extensions include:
+
+* Evaluate attacks on a larger image dataset
+* Add ground-truth labels and conventional attack success rate
+* Report transferability separately for each model
+* Add reproducible random seeds
+* Freeze model parameters during attack generation
+* Add Apple Silicon MPS support
+* Compare additional attack methods
+* Evaluate targeted attacks
+* Perform statistical analysis across multiple images
+
+## Technologies
+
+* Python
+* PyTorch
+* Torchvision
+* NumPy
+* Pillow
+* Matplotlib
+* scikit-image
+
+## Project Structure
+
+```text
+.
+├── Pasted code.py
+├── README.md
+├── images/
+├── outputs/
+│   ├── adversarial/
+│   ├── visualizations/
+│   └── reports/
+└── ...
+```
+
+## Disclaimer
+
+This project is intended for research and educational purposes, particularly for studying the robustness of machine-learning image classifiers against adversarial perturbations.
